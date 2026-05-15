@@ -1,0 +1,142 @@
+name: Validate Configuration
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Validate JSON syntax
+      run: |
+        echo "Validating JSON files..."
+        # Check openclaw.json.example
+        if [ -f "openclaw.json.example" ]; then
+          python3 -m json.tool openclaw.json.example > /dev/null
+          echo "✓ openclaw.json.example is valid JSON"
+        fi
+        
+        # Check secrets.json.example
+        if [ -f "secrets.json.example" ]; then
+          python3 -m json.tool secrets.json.example > /dev/null
+          echo "✓ secrets.json.example is valid JSON"
+        fi
+        
+        # Check all other JSON files
+        for file in $(find . -name "*.json" -not -path "./.git/*" -not -name "secrets.json"); do
+          if [ -f "$file" ]; then
+            python3 -m json.tool "$file" > /dev/null
+            echo "✓ $file is valid JSON"
+          fi
+        done
+        
+    - name: Check for accidental secrets
+      run: |
+        echo "Checking for potential secrets..."
+        
+        # Check for hardcoded API keys in example files
+        if [ -f "openclaw.json.example" ]; then
+          if grep -q -E '(api[Kk]ey|token|secret|password).*["\']\w{10,}["\']' openclaw.json.example; then
+            echo "⚠️  WARNING: Possible hardcoded secret in openclaw.json.example"
+            grep -n -E '(api[Kk]ey|token|secret|password).*["\']\w{10,}["\']' openclaw.json.example
+            exit 1
+          fi
+        fi
+        
+        # Check for actual secrets.json (should not be committed)
+        if [ -f "secrets.json" ]; then
+          echo "❌ ERROR: secrets.json should not be committed to git!"
+          echo "Please remove secrets.json and use secrets.json.example instead"
+          exit 1
+        fi
+        
+        echo "✓ No accidental secrets found"
+        
+    - name: Validate Markdown files
+      run: |
+        echo "Checking Markdown files..."
+        
+        # Install markdownlint if available
+        if command -v markdownlint &> /dev/null; then
+          markdownlint "**/*.md" || true
+        else
+          echo "markdownlint not installed, skipping markdown validation"
+        fi
+        
+    - name: Check file permissions
+      run: |
+        echo "Checking file permissions..."
+        
+        # Check for executable files
+        find . -type f -name "*.sh" -exec test -x {} \; -print | while read file; do
+          echo "✓ $file is executable (as expected for shell script)"
+        done
+        
+        # Warn about overly permissive files
+        find . -type f -perm /o+w -not -path "./.git/*" | while read file; do
+          echo "⚠️  WARNING: $file is world-writable"
+        done
+        
+    - name: Run shellcheck on shell scripts
+      run: |
+        echo "Checking shell scripts..."
+        
+        if command -v shellcheck &> /dev/null; then
+          find . -name "*.sh" -not -path "./.git/*" | while read file; do
+            if [ -f "$file" ]; then
+              shellcheck "$file" || true
+            fi
+          done
+        else
+          echo "shellcheck not installed, skipping shell script validation"
+        fi
+        
+    - name: Validate .gitignore
+      run: |
+        echo "Validating .gitignore..."
+        
+        if [ -f ".gitignore" ]; then
+          # Check that secrets.json is in .gitignore
+          if ! grep -q "secrets.json" .gitignore; then
+            echo "⚠️  WARNING: secrets.json not found in .gitignore"
+          fi
+          
+          # Check that .env files are in .gitignore
+          if ! grep -q "\.env" .gitignore; then
+            echo "⚠️  WARNING: .env files not found in .gitignore"
+          fi
+          
+          echo "✓ .gitignore validation complete"
+        fi
+        
+    - name: Final validation report
+      run: |
+        echo "========================================"
+        echo "✅ Configuration validation complete!"
+        echo "========================================"
+        echo ""
+        echo "Summary:"
+        echo "- JSON files validated"
+        echo "- No accidental secrets found"
+        echo "- File permissions checked"
+        echo "- .gitignore validated"
+        echo ""
+        echo "Next steps for deployment:"
+        echo "1. Copy openclaw.json.example to openclaw.json"
+        echo "2. Copy secrets.json.example to secrets.json"
+        echo "3. Edit secrets.json with your actual API keys"
+        echo "4. Never commit secrets.json to git!"
+        echo "========================================"

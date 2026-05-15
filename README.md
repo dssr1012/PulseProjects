@@ -1,6 +1,22 @@
-# OpenClaw Configuration
+# PulseProjects - OpenClaw Configuration
 
-This repository contains the OpenClaw configuration with externalized secrets for secure version control.
+![GitHub](https://img.shields.io/github/license/dssr1012/PulseProjects)
+![GitHub last commit](https://img.shields.io/github/last-commit/dssr1012/PulseProjects)
+![GitHub repo size](https://img.shields.io/github/repo-size/dssr1012/PulseProjects)
+![OpenClaw](https://img.shields.io/badge/OpenClaw-2026.5.7-blue)
+
+Secure, version-controlled OpenClaw configuration with externalized secrets and intelligent skill orchestration.
+
+## 🚀 Features
+
+- **🔒 Secure Secret Management** - All API keys externalized to secrets.json
+- **🤖 Intelligent Skill Orchestration** - Automatic skill and model selection
+- **🧠 Context Management** - Auto-compaction and pruning for optimal performance
+- **📦 Version Controlled** - Safe configuration sharing without exposing secrets
+- **⚡ Easy Deployment** - Simple setup with example files
+- **🛡️ Security First** - GitHub Actions validation to prevent secret leaks
+
+## 📋 Quick Start
 
 ## 🚀 Quick Start
 
