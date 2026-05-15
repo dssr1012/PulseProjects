@@ -1,0 +1,460 @@
+{
+  "// IMPORTANT": "This is an example configuration file. Copy to openclaw.json and fill in your secrets.",
+  "// SECURITY": "Never commit secrets.json or any file containing actual API keys to git.",
+  "// SETUP": "1. Copy this file to openclaw.json\n2. Create secrets.json from secrets.json.example\n3. Fill in your actual API keys\n4. Restart OpenClaw gateway",
+  
+  "agents": {
+    "defaults": {
+      "workspace": "/root/.openclaw/workspace",
+      "model": {
+        "primary": "custom-api-ap-southeast-1-modelarts-maas-com/deepseek-v4-flash",
+        "fallbacks": [
+          "custom-api-ap-southeast-1-modelarts-maas-com/deepseek-v3.2",
+          "custom-api-ap-southeast-1-modelarts-maas-com/deepseek-v4-pro",
+          "custom-api-ap-southeast-1-modelarts-maas-com/deepseek-v3.1-terminus",
+          "custom-api-ap-southeast-1-modelarts-maas-com/DeepSeek-V3",
+          "custom-api-ap-southeast-1-modelarts-maas-com/glm-5.1"
+        ]
+      },
+      "models": {
+        "custom-api-ap-southeast-1-modelarts-maas-com/deepseek-v4-flash": {
+          "alias": "deepseek-v4-flash"
+        },
+        "custom-api-ap-southeast-1-modelarts-maas-com/deepseek-v3.2": {
+          "alias": "deepseek-v3.2"
+        },
+        "custom-api-ap-southeast-1-modelarts-maas-com/deepseek-v4-pro": {
+          "alias": "deepseek-v4-pro"
+        },
+        "custom-api-ap-southeast-1-modelarts-maas-com/deepseek-v3.1-terminus": {
+          "alias": "deepseek-v3.1-terminus"
+        },
+        "custom-api-ap-southeast-1-modelarts-maas-com/DeepSeek-V3": {
+          "alias": "DeepSeek-V3"
+        },
+        "custom-api-ap-southeast-1-modelarts-maas-com/deepseek-r1-250528": {
+          "alias": "deepseek-r1-250528"
+        },
+        "custom-api-ap-southeast-1-modelarts-maas-com/glm-5": {
+          "alias": "glm-5"
+        },
+        "custom-api-ap-southeast-1-modelarts-maas-com/glm-5.1": {
+          "alias": "glm-5.1"
+        }
+      },
+      "compaction": {
+        "reserveTokensFloor": 50000,
+        "mode": "safeguard",
+        "timeoutSeconds": 300,
+        "keepRecentTokens": 10000,
+        "identifierPolicy": "strict",
+        "midTurnPrecheck": {
+          "enabled": true
+        },
+        "truncateAfterCompaction": true,
+        "maxActiveTranscriptBytes": "10mb",
+        "notifyUser": false,
+        "memoryFlush": {
+          "enabled": true,
+          "systemPrompt": "Session nearing compaction. Store durable memories now."
+        }
+      },
+      "contextPruning": {
+        "mode": "cache-ttl",
+        "ttl": "1h",
+        "keepLastAssistants": 10,
+        "softTrimRatio": 0.3,
+        "hardClearRatio": 0.5,
+        "minPrunableToolChars": 50000,
+        "softTrim": {
+          "maxChars": 4000,
+          "headChars": 1500,
+          "tailChars": 1500
+        },
+        "hardClear": {
+          "enabled": true,
+          "placeholder": "[Old tool result content cleared]"
+        }
+      },
+
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": { "source": "file", "provider": "default", "id": "/gateway/auth/token" }
+    },
+    "port": 18789,
+    "bind": "loopback",
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "controlUi": {
+      "allowInsecureAuth": true
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "contacts.add",
+        "calendar.add",
+        "reminders.add",
+        "sms.send",
+        "sms.search"
+      ]
+    }
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "tools": {
+    "profile": "coding",
+    "web": {
+      "search": {
+        "provider": "gemini",
+        "enabled": true
+      }
+    }
+  },
+  "models": {
+    "mode": "merge",
+    "providers": {
+      "custom-api-ap-southeast-1-modelarts-maas-com": {
+        "baseUrl": "https://api-ap-southeast-1.modelarts-maas.com/openai/v1",
+        "api": "openai-completions",
+        "apiKey": { "source": "file", "provider": "default", "id": "/providers/custom-api-ap-southeast-1-modelarts-maas-com/apiKey" },
+        "models": [
+          {
+            "id": "deepseek-v4-flash",
+            "name": "deepseek-v4-flash (Custom Provider)",
+            "contextWindow": 1000000,
+            "maxTokens": 128000,
+            "input": [
+              "text"
+            ],
+            "reasoning": true,
+            "cost": {
+              "input": 0.135,
+              "output": 0.27
+            }
+          },
+          {
+            "id": "deepseek-v3.2",
+            "name": "deepseek-v3.2 (Custom Provider)",
+            "contextWindow": 160000,
+            "maxTokens": 32000,
+            "input": [
+              "text"
+            ],
+            "reasoning": true,
+            "cost": {
+              "input": 0.27,
+              "output": 0.404
+            }
+          },
+          {
+            "id": "deepseek-v4-pro",
+            "name": "deepseek-v4-pro (Custom Provider)",
+            "contextWindow": 128000,
+            "maxTokens": 64000,
+            "input": [
+              "text"
+            ],
+            "reasoning": true,
+            "cost": {
+              "input": 0.27,
+              "output": 0.54
+            }
+          },
+          {
+            "id": "deepseek-v3.1-terminus",
+            "name": "deepseek-v3.1-terminus (Custom Provider)",
+            "contextWindow": 160000,
+            "maxTokens": 32000,
+            "input": [
+              "text"
+            ],
+            "reasoning": true,
+            "cost": {
+              "input": 0.27,
+              "output": 0.404
+            }
+          },
+          {
+            "id": "DeepSeek-V3",
+            "name": "DeepSeek-V3 (Custom Provider)",
+            "contextWindow": 128000,
+            "maxTokens": 32000,
+            "input": [
+              "text"
+            ],
+            "reasoning": true,
+            "cost": {
+              "input": 0.27,
+              "output": 0.404
+            }
+          },
+          {
+            "id": "deepseek-r1-250528",
+            "name": "deepseek-r1-250528 (Custom Provider)",
+            "contextWindow": 128000,
+            "maxTokens": 32000,
+            "input": [
+              "text"
+            ],
+            "reasoning": true,
+            "cost": {
+              "input": 0.27,
+              "output": 0.404
+            }
+          },
+          {
+            "id": "glm-5",
+            "name": "glm-5 (Custom Provider)",
+            "contextWindow": 128000,
+            "maxTokens": 32000,
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "cost": {
+              "input": 0.27,
+              "output": 0.404
+            }
+          },
+          {
+            "id": "glm-5.1",
+            "name": "glm-5.1 (Custom Provider)",
+            "contextWindow": 128000,
+            "maxTokens": 32000,
+            "input": [
+              "text"
+            ],
+            "reasoning": false,
+            "cost": {
+              "input": 0.27,
+              "output": 0.404
+            }
+          }
+        ]
+      }
+    }
+  },
+  "plugins": {
+    "entries": {
+      "telegram": {
+        "enabled": true
+      },
+      "google": {
+        "enabled": true,
+        "config": {
+          "webSearch": {
+            "apiKey": { "source": "file", "provider": "default", "id": "/google/apiKey" }
+          }
+        }
+      }
+    }
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "groups": {
+        "*": {
+          "requireMention": true
+        }
+      },
+      "botToken": { "source": "file", "provider": "default", "id": "/telegram/botToken" }
+    }
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "boot-md": {
+          "enabled": true
+        },
+        "bootstrap-extra-files": {
+          "enabled": true
+        },
+        "command-logger": {
+          "enabled": true
+        },
+        "session-memory": {
+          "enabled": true
+        }
+      }
+    }
+  },
+  "wizard": {
+    "lastRunAt": "2026-05-14T13:57:22.685Z",
+    "lastRunVersion": "2026.5.7",
+    "lastRunCommand": "doctor",
+    "lastRunMode": "local"
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.5.7",
+    "lastTouchedAt": "2026-05-14T13:57:22.906Z"
+  },
+  "commands": {
+    "ownerAllowFrom": [
+      "telegram:1494227294"
+    ]
+  },
+  "messages": {
+    "groupChat": {
+      "visibleReplies": "message_tool"
+    }
+  },
+  "skills": {
+    "entries": {
+      "1password": {
+        "enabled": false
+      },
+      "apple-notes": {
+        "enabled": false
+      },
+      "apple-reminders": {
+        "enabled": false
+      },
+      "bear-notes": {
+        "enabled": false
+      },
+      "blogwatcher": {
+        "enabled": false
+      },
+      "blucli": {
+        "enabled": false
+      },
+      "bluebubbles": {
+        "enabled": false
+      },
+      "camsnap": {
+        "enabled": false
+      },
+      "clawhub": {
+        "enabled": false
+      },
+      "coding-agent": {
+        "enabled": false
+      },
+      "discord": {
+        "enabled": false
+      },
+      "eightctl": {
+        "enabled": false
+      },
+      "gemini": {
+        "enabled": false
+      },
+      "gh-issues": {
+        "enabled": false
+      },
+      "gifgrep": {
+        "enabled": false
+      },
+      "github": {
+        "enabled": false
+      },
+      "gog": {
+        "enabled": false
+      },
+      "goplaces": {
+        "enabled": false
+      },
+      "himalaya": {
+        "enabled": false
+      },
+      "imsg": {
+        "enabled": false
+      },
+      "mcporter": {
+        "enabled": false
+      },
+      "model-usage": {
+        "enabled": false
+      },
+      "nano-pdf": {
+        "enabled": false
+      },
+      "notion": {
+        "enabled": false
+      },
+      "obsidian": {
+        "enabled": false
+      },
+      "openai-whisper": {
+        "enabled": false
+      },
+      "openai-whisper-api": {
+        "enabled": false
+      },
+      "openhue": {
+        "enabled": false
+      },
+      "oracle": {
+        "enabled": false
+      },
+      "ordercli": {
+        "enabled": false
+      },
+      "peekaboo": {
+        "enabled": false
+      },
+      "sag": {
+        "enabled": false
+      },
+      "session-logs": {
+        "enabled": false
+      },
+      "sherpa-onnx-tts": {
+        "enabled": false
+      },
+      "slack": {
+        "enabled": false
+      },
+      "songsee": {
+        "enabled": false
+      },
+      "sonoscli": {
+        "enabled": false
+      },
+      "spotify-player": {
+        "enabled": false
+      },
+      "summarize": {
+        "enabled": false
+      },
+      "things-mac": {
+        "enabled": false
+      },
+      "trello": {
+        "enabled": false
+      },
+      "video-frames": {
+        "enabled": false
+      },
+      "voice-call": {
+        "enabled": false
+      },
+      "wacli": {
+        "enabled": false
+      },
+      "xurl": {
+        "enabled": false
+      }
+    }
+  },
+  "secrets": {
+    "providers": {
+      "default": {
+        "source": "file",
+        "path": "~/.openclaw/secrets.json",
+        "mode": "json"
+      }
+    }
+  },
+  "// NOTE": "Create secrets.json with your actual API keys. See README.md for template."
+}

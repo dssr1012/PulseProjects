@@ -1,0 +1,67 @@
+# Secrets and sensitive data
+secrets.json
+.env.key
+*.env
+.env.local
+.env.*.local
+
+# OpenClaw secrets
+secrets/
+credentials/
+auth-profiles.json
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Runtime data
+tmp/
+temp/
+*.tmp
+*.temp
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules
+node_modules/
+
+# Session files
+sessions/
+*.session
+*.trajectory-path.json
+
+# Cache
+.cache/
+
+# Backup files
+*.backup
+*.bak
+
+# Config backups
+openclaw.json.backup
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+/tmp/
+/var/tmp/
