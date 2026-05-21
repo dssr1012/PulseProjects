@@ -105,7 +105,14 @@ ModelArts MaaS API (remote). Hermes is configured to use the same API endpoint.
 | Status | SHUTOFF | ACTIVE |
 | Hermes | Removed | Deployed |
 
+## Gateway Service
+- ✅ Systemd user service installed and enabled (`hermes-gateway.service`)
+- ✅ Systemd linger enabled (survives logout)
+- ✅ Telegram connected (polling mode, 30 commands registered)
+- ✅ 46 MCP tools loaded (6 huawei-cloud + 14 filesystem + 26 github)
+- ✅ Secret redaction enabled
+- ✅ Cron ticker active (60s interval)
+
 ## Pending Items
-1. **Telegram Bot**: Create new bot via @BotFather for Hermes gateway
-2. **Hermes Gateway Service**: Run `hermes gateway install` on Singapore ECS
-3. **SSL/HTTPS**: Configure if exposing Hermes gateway publicly
+1. **SSL/HTTPS**: Configure if exposing Hermes gateway publicly
+2. **Telegram commands**: Customize bot commands via /setcommands in @BotFather
