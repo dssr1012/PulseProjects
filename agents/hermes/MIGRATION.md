@@ -113,6 +113,14 @@ ModelArts MaaS API (remote). Hermes is configured to use the same API endpoint.
 - ✅ Secret redaction enabled
 - ✅ Cron ticker active (60s interval)
 
+## Auth Fix (2026-05-22 03:22)
+**Root cause**: Hermes with `provider: custom` reads `CUSTOM_API_KEY` env var, 
+not `OPENAI_API_KEY`. The initial config only set `OPENAI_API_KEY` and 
+`DEEPSEEK_API_KEY`, causing `ModelArts.81003: Invalid authorization header` (HTTP 401).
+
+**Fix**: Added `CUSTOM_API_KEY` and `CUSTOM_BASE_URL` to `/root/.hermes/.env`.
+After restart, all auth errors resolved. Direct API curl returns 200 OK.
+
 ## Pending Items
 1. **SSL/HTTPS**: Configure if exposing Hermes gateway publicly
 2. **Telegram commands**: Customize bot commands via /setcommands in @BotFather
