@@ -65,3 +65,18 @@ openclaw.json.backup
 # Temporary files
 /tmp/
 /var/tmp/
+# Hermes secrets
+agents/hermes/.env
+agents/hermes/auth.json
+
+# OpenClaw runtime data
+agents/openclaw/config/secrets.json
+agents/openclaw/config/openclaw.json
+agents/openclaw/workspace/.openclaw/
+agents/openclaw/workspace/memory/
+agents/openclaw/workspace/.git/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
